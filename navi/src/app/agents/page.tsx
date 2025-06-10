@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useTheme } from '../../context/ThemeContext';
 import { motion } from 'framer-motion';
 import Sidebar from '../components/Sidebar';
+import AgentsModal from '../components/AgentsModal';
 
 export default function AgentsPage() {
   const { isDarkMode, toggleDarkMode } = useTheme();
@@ -12,6 +13,8 @@ export default function AgentsPage() {
   const [isNaviModalOpen, setIsNaviModalOpen] = useState(false);
   const [isNaviDropdownOpen, setIsNaviDropdownOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isAgentsModalOpen, setIsAgentsModalOpen] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState<any>(null);
 
   const availableAgents = [
     { name: 'Navi', image: '/images/Navi.png', bgColor: 'from-cyan-400 to-teal-500', description: 'Lorem ipsum' },
@@ -31,6 +34,16 @@ export default function AgentsPage() {
     { name: 'Neuro', image: null, bgColor: 'from-gray-600 to-gray-700', description: 'Coming Soon' },
   ];
 
+  const openAgentsModal = (agent: any) => {
+    setSelectedAgent(agent);
+    setIsAgentsModalOpen(true);
+  };
+
+  const closeAgentsModal = () => {
+    setIsAgentsModalOpen(false);
+    setSelectedAgent(null);
+  };
+
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'} flex font-poppins transition-colors duration-300`}>
       <Sidebar
@@ -45,75 +58,82 @@ export default function AgentsPage() {
         isProfileOpen={isProfileOpen}
         setIsProfileOpen={setIsProfileOpen}
       />
-      <div className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'ml-16' : 'ml-48'} p-4 sm:p-6 overflow-x-hidden`}>
+      <div className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'ml-12' : 'ml-32'} p-6 sm:p-8 overflow-x-hidden flex justify-center ${isAgentsModalOpen ? 'filter blur-sm' : ''}`}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-[calc(100vw-4rem)] mx-auto"
+          className="w-full max-w-6xl"
         >
-          <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-8 sm:mb-10">
             <div className="text-center sm:text-left w-full">
-              <h1 className="text-2xl sm:text-3xl font-extrabold">Meet Your Agents</h1>
-              <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm sm:text-base`}>
+              <h1 className="text-3xl sm:text-4xl font-extrabold">Meet Your Agents</h1>
+              <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-base sm:text-lg mt-2`}>
                 Lorem ipsum dolor sit amet consectetur. Etiu eu eu mauris purus. Facibus amet sed ut
               </p>
             </div>
           </div>
 
-          <div className="mb-8 sm:mb-12">
-            <h2 className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} text-lg sm:text-xl font-semibold mb-4 sm:mb-6`}>Available Agents</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="mb-10 sm:mb-14">
+            <h2 className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} text-xl sm:text-2xl font-semibold mb-6 sm:mb-8`}>Available Agents</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
               {availableAgents.map((agent, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1, duration: 0.5 }}
-                  whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-                  className={`rounded-xl p-3 sm:p-4 flex flex-col items-center justify-center text-center text-white min-h-[150px] sm:min-h-[200px] bg-gradient-to-br ${agent.bgColor} shadow-lg`}
+                  whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
+                  className={`rounded-xl p-4 sm:p-6 flex flex-col items-center justify-center text-center text-white min-h-[180px] sm:min-h-[220px] bg-gradient-to-br ${agent.bgColor} shadow-xl border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} cursor-pointer`}
+                  onClick={() => openAgentsModal(agent)}
                 >
                   {agent.image ? (
-                    <Image src={agent.image} alt={agent.name} width={80} height={80} className="rounded-full mb-2 sm:mb-3" />
+                    <Image src={agent.image} alt={agent.name} width={96} height={96} className="rounded-full mb-3 sm:mb-4" />
                   ) : (
-                    <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-gray-500 flex items-center justify-center mb-2 sm:mb-3">
-                      <span className="text-gray-300 text-2xl sm:text-4xl">?</span>
+                    <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-gray-500 flex items-center justify-center mb-3 sm:mb-4">
+                      <span className="text-gray-300 text-3xl sm:text-5xl">?</span>
                     </div>
                   )}
-                  <h3 className="text-lg sm:text-xl font-semibold">{agent.name}</h3>
-                  <p className="text-sm sm:text-base opacity-80">{agent.description}</p>
+                  <h3 className="text-xl sm:text-2xl font-semibold">{agent.name}</h3>
+                  <p className="text-base sm:text-lg opacity-80 mt-2">{agent.description}</p>
                 </motion.div>
               ))}
             </div>
           </div>
 
           <div>
-            <h2 className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} text-lg sm:text-xl font-semibold mb-4 sm:mb-6`}>Coming Soon Agents</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            <h2 className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} text-xl sm:text-2xl font-semibold mb-6 sm:mb-8`}>Coming Soon Agents</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
               {comingSoonAgents.map((agent, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1, duration: 0.5 }}
-                  whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-                  className={`rounded-xl p-3 sm:p-4 flex flex-col items-center justify-center text-center text-white min-h-[150px] sm:min-h-[200px] bg-gradient-to-br ${agent.bgColor} shadow-lg`}
+                  whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
+                  className={`rounded-xl p-4 sm:p-6 flex flex-col items-center justify-center text-center text-white min-h-[180px] sm:min-h-[220px] bg-gradient-to-br ${agent.bgColor} shadow-xl border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}
                 >
                   {agent.image ? (
-                    <Image src={agent.image} alt={agent.name} width={80} height={80} className="rounded-full mb-2 sm:mb-3" />
+                    <Image src={agent.image} alt={agent.name} width={96} height={96} className="rounded-full mb-3 sm:mb-4" />
                   ) : (
-                    <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-gray-500 flex items-center justify-center mb-2 sm:mb-3">
-                      <span className="text-gray-300 text-2xl sm:text-4xl">?</span>
+                    <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-gray-500 flex items-center justify-center mb-3 sm:mb-4">
+                      <span className="text-gray-300 text-3xl sm:text-5xl">?</span>
                     </div>
                   )}
-                  <h3 className="text-lg sm:text-xl font-semibold">{agent.name}</h3>
-                  <p className="text-sm sm:text-base opacity-80">{agent.description}</p>
+                  <h3 className="text-xl sm:text-2xl font-semibold">{agent.name}</h3>
+                  <p className="text-base sm:text-lg opacity-80 mt-2">{agent.description}</p>
                 </motion.div>
               ))}
             </div>
           </div>
         </motion.div>
       </div>
+      <AgentsModal
+        isOpen={isAgentsModalOpen}
+        onClose={closeAgentsModal}
+        isDarkMode={isDarkMode}
+        agent={selectedAgent}
+      />
     </div>
   );
 }

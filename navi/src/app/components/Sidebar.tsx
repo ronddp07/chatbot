@@ -50,7 +50,7 @@ const navItems: NavItem[] = [
   { name: 'Dashboard', path: '/', icon: HiOutlineChartBarSquare },
   { name: 'Agents', path: '/agents', icon: HiOutlineUserGroup },
   { name: 'Connections', path: '/connections', icon: HiOutlineLink },
-  { name: 'Integration', path: '/integration', icon: HiOutlinePuzzlePiece },
+  { name: 'Integrations', path: '/integrations', icon: HiOutlinePuzzlePiece },
   { name: 'Earn Credits and $', path: '/earn-credits', icon: HiOutlineGift },
   { name: 'Notifications', path: '/notifications', icon: HiOutlineBell },
 ];
@@ -244,6 +244,7 @@ export default function Sidebar({
               justifyContent: isSidebarCollapsed ? 'center' : 'space-between'
             }}
             className="flex items-center rounded-full text-white w-full cursor-pointer mb-4"
+            onClick={() => handleNavigation('/agentsdropdown')}
           >
             <div className={`flex items-center ${isSidebarCollapsed ? 'justify-center' : 'space-x-3'}`}>
               <Image

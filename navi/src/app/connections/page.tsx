@@ -19,7 +19,7 @@ interface ConnectionCardProps {
   description: string;
   credits: string;
   isAvailable: boolean;
-  bgColor?: string; // Optional background color for customization
+  bgColor?: string;
 }
 
 const ConnectionCard: React.FC<ConnectionCardProps> = ({
@@ -37,10 +37,10 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-      className={`rounded-xl p-4 shadow-lg ${isDarkMode ? 'bg-gray-800' : bgColor} ${isDarkMode ? 'text-gray-100' : 'text-gray-900'} flex flex-col`}
+      whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
+      className={`rounded-xl p-5 shadow-xl border ${isDarkMode ? 'bg-gray-800 border-gray-700 text-gray-100' : `${bgColor} border-gray-200 text-gray-900`} flex flex-col`}
     >
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center mb-3">
         <label htmlFor={`toggle-${name}`} className="flex items-center cursor-pointer">
           <div className="relative">
             <input
@@ -51,21 +51,22 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
               onChange={() => setIsEnabled(!isEnabled)}
             />
             <div
-              className={`block w-11 h-6 rounded-full ${isEnabled ? (isDarkMode ? 'bg-teal-700' : 'bg-teal-500') : (isDarkMode ? 'bg-gray-600' : 'bg-gray-300')} transition-colors duration-200`}
+              className={`block w-12 h-6 rounded-full ${isEnabled ? (isDarkMode ? 'bg-teal-700' : 'bg-teal-500') : (isDarkMode ? 'bg-gray-600' : 'bg-gray-300')} transition-colors duration-200`}
             ></div>
             <div
-              className={`dot absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform duration-200 ${isEnabled ? 'translate-x-5' : 'translate-x-0'}`}
+              className={`dot absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform duration-200 ${isEnabled ? 'translate-x-6' : 'translate-x-0'}
+              `}
             ></div>
           </div>
         </label>
-        <div className="flex items-center space-x-2">
-          <HiOutlineInformationCircle size={20} className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} cursor-pointer`} />
-          <HiOutlineEllipsisHorizontal size={20} className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} cursor-pointer`} />
+        <div className="flex items-center space-x-3">
+          <HiOutlineInformationCircle size={22} className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} cursor-pointer hover:text-teal-500`} />
+          <HiOutlineEllipsisHorizontal size={22} className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} cursor-pointer hover:text-teal-500`} />
         </div>
       </div>
-      <h3 className="text-lg font-semibold mb-1">{name}</h3>
-      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} flex-grow`}>{description}</p>
-      <p className={`text-xs mt-3 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{credits}</p>
+      <h3 className="text-xl font-semibold mb-2">{name}</h3>
+      <p className={`text-base ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} flex-grow`}>{description}</p>
+      <p className={`text-sm mt-3 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{credits}</p>
     </motion.div>
   );
 };
@@ -112,37 +113,37 @@ export default function ConnectionsPage() {
         isProfileOpen={isProfileOpen}
         setIsProfileOpen={setIsProfileOpen}
       />
-      <div className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'ml-20' : 'ml-64'} p-4 sm:p-6 overflow-x-hidden`}>
+      <div className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'ml-12' : 'ml-32'} p-6 sm:p-8 overflow-x-hidden flex justify-center`}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-7xl mx-auto"
+          className="w-full max-w-6xl"
         >
           {/* Header */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 sm:mb-10">
             <div>
-              <h1 className="text-3xl font-extrabold">Connections</h1>
-              <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-sm`}>A curated list of connected AI models ready for use in your applications.</p>
+              <h1 className="text-3xl sm:text-4xl font-extrabold">Connections</h1>
+              <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-base sm:text-lg mt-2`}>A curated list of connected AI models ready for use in your applications.</p>
             </div>
-            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto mt-4 sm:mt-0">
-              <div className="relative w-full sm:w-64">
+            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto mt-4 sm:mt-0">
+              <div className="relative w-full sm:w-72">
                 <input
                   type="text"
                   placeholder="Search connections..."
-                  className={`w-full p-3 pl-10 rounded-xl ${isDarkMode ? 'bg-gray-700 border border-gray-600 text-gray-100 placeholder-gray-400' : 'bg-white border border-gray-200 text-gray-900 placeholder-gray-500'}`}
+                  className={`w-full p-3 pl-10 rounded-xl shadow-sm border ${isDarkMode ? 'bg-gray-800 border-gray-600 text-gray-100 placeholder-gray-400' : 'bg-white border-gray-200 text-gray-900 placeholder-gray-500'} focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors duration-200`}
                 />
-                <HiMagnifyingGlass size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <HiMagnifyingGlass size={22} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               </div>
               <button className="flex items-center justify-center px-4 py-3 bg-teal-500 text-white rounded-xl shadow-md hover:bg-teal-600 transition-colors duration-200 shrink-0">
-                <HiOutlinePlus size={20} className="mr-2" /> Add a custom connection
+                <HiOutlinePlus size={22} className="mr-2" /> Add a custom connection
               </button>
             </div>
           </div>
 
           {/* Categories and Status Filter */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
-            <div className={`flex flex-wrap gap-2 mb-4 sm:mb-0 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl p-1`}>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10">
+            <div className={`flex flex-wrap gap-2 mb-4 sm:mb-0 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-xl p-1.5 shadow-sm`}>
               {connectionCategories.map((category) => (
                 <button
                   key={category}
@@ -150,7 +151,7 @@ export default function ConnectionsPage() {
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
                     activeTab === category
                       ? isDarkMode
-                        ? 'bg-teal-600 text-white'
+                        ? 'bg-teal-600 text-white shadow-sm'
                         : 'bg-white text-gray-900 shadow-sm'
                       : isDarkMode
                         ? 'text-gray-300 hover:bg-gray-700'
@@ -162,13 +163,13 @@ export default function ConnectionsPage() {
               ))}
             </div>
 
-            <div className="relative w-full sm:w-auto">
+            <div className="relative w-full sm:w-48">
               <button
                 onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
-                className={`flex items-center justify-between w-full sm:w-40 px-4 py-2 rounded-xl border ${isDarkMode ? 'bg-gray-800 border-gray-600 text-gray-100' : 'bg-white border-gray-200 text-gray-900'} shadow-sm transition-colors duration-200`}
+                className={`flex items-center justify-between w-full px-4 py-3 rounded-xl border ${isDarkMode ? 'bg-gray-800 border-gray-600 text-gray-100' : 'bg-white border-gray-200 text-gray-900'} shadow-sm hover:bg-gray-700 transition-colors duration-200`}
               >
                 {selectedStatus}
-                {isStatusDropdownOpen ? <HiChevronUp size={20} /> : <HiChevronDown size={20} />}
+                {isStatusDropdownOpen ? <HiChevronUp size={22} /> : <HiChevronDown size={22} />}
               </button>
               <AnimatePresence>
                 {isStatusDropdownOpen && (
@@ -176,10 +177,10 @@ export default function ConnectionsPage() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                    className={`absolute right-0 mt-2 w-full sm:w-40 rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10 ${isDarkMode ? 'bg-gray-800 ring-gray-700' : 'bg-white ring-gray-200'}`}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    className={`absolute right-0 mt-2 w-full rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10 ${isDarkMode ? 'bg-gray-800 ring-gray-700' : 'bg-white ring-gray-200'}`}
                   >
-                    <div className="py-1">
+                    <div className="py-1.5">
                       {statusOptions.map((status) => (
                         <button
                           key={status}
@@ -187,9 +188,7 @@ export default function ConnectionsPage() {
                             setSelectedStatus(status);
                             setIsStatusDropdownOpen(false);
                           }}
-                          className={`block w-full text-left px-4 py-2 text-sm ${
-                            isDarkMode ? 'hover:bg-gray-700 text-gray-100' : 'hover:bg-gray-100 text-gray-700'
-                          }`}
+                          className={`block w-full text-left px-4 py-2 text-sm ${isDarkMode ? 'hover:bg-gray-700 text-gray-100' : 'hover:bg-gray-100 text-gray-700'} transition-colors duration-200`}
                         >
                           {status}
                         </button>
@@ -202,7 +201,7 @@ export default function ConnectionsPage() {
           </div>
 
           {/* Connections Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {connections.map((connection, index) => (
               <ConnectionCard key={index} {...connection} />
             ))}
@@ -211,4 +210,4 @@ export default function ConnectionsPage() {
       </div>
     </div>
   );
-} 
+}
