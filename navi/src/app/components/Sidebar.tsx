@@ -286,22 +286,22 @@ export default function Sidebar({
           </motion.div>
 
           {navItems.map((item) => {
-            const isActive = pathname.startsWith(item.path);
+            const isActive = item.path === '/' ? pathname === '/' : pathname.startsWith(item.path);
             return (
             <motion.button
                 key={item.name}
                 onClick={() => handleNavigation(item.path)}
-                className={`px-4 py-3 my-1 rounded-xl flex items-center w-full text-left transition-colors duration-200 ${isSidebarCollapsed ? 'justify-center' : 'space-x-4'} ${isActive ? (isDarkMode ? 'bg-emerald-900' : 'bg-emerald-100') : (isDarkMode ? 'bg-gray-900 hover:bg-gray-800' : 'bg-white hover:bg-gray-50')}`}
+                className={`px-4 py-3 my-1 rounded-xl flex items-center w-full text-left transition-colors duration-200 group ${isSidebarCollapsed ? 'justify-center' : 'space-x-4'} ${isActive ? (isDarkMode ? 'bg-emerald-900' : 'bg-emerald-100') : (isDarkMode ? 'bg-gray-900 hover:bg-emerald-800' : 'bg-white hover:bg-emerald-50')}`}
                 title={item.name}
               >
-                <item.icon size={28} className={`shrink-0 ${isActive ? (isDarkMode ? 'text-emerald-400' : 'text-emerald-600') : (isDarkMode ? 'text-gray-500' : 'text-gray-400')}`} />
+                <item.icon size={28} className={`shrink-0 transition-colors duration-200 ${isActive ? (isDarkMode ? 'text-emerald-400' : 'text-emerald-600') : (isDarkMode ? 'text-gray-500 group-hover:text-emerald-400' : 'text-gray-400 group-hover:text-emerald-600')}`} />
                 <AnimatePresence>
                   {!isSidebarCollapsed && (
                     <motion.span
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className={`text-base font-medium whitespace-nowrap ${isActive ? (isDarkMode ? 'text-emerald-300' : 'text-emerald-800') : (isDarkMode ? 'text-gray-300' : 'text-gray-700')}`}
+                      className={`text-base font-medium whitespace-nowrap transition-colors duration-200 ${isActive ? (isDarkMode ? 'text-emerald-300' : 'text-emerald-800') : (isDarkMode ? 'text-gray-300 group-hover:text-emerald-300' : 'text-gray-700 group-hover:text-emerald-800')}`}
                     >
                       {item.name}
                     </motion.span>

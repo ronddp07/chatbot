@@ -687,8 +687,8 @@ export default function ManageUsersPage() {
             </div>
           ))}
         </div>
-      </div>
-
+      </div>      
+      
       {/* Create Group Modal */}
       <AnimatePresence>
         {showCreateGroupModal && (
@@ -696,123 +696,174 @@ export default function ManageUsersPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`fixed inset-0 ${isDarkMode ? 'bg-gray-900/80' : 'bg-gray-500/80'} flex items-center justify-center z-50`}
-          >
-            <motion.div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+            onClick={() => setShowCreateGroupModal(false)}
+          >            <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className={`${isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'} rounded-2xl shadow-xl w-full max-w-lg mx-4 overflow-hidden`}
+              className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-2xl shadow-xl w-full max-w-2xl mx-4 overflow-hidden`}
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-700">Create Group</h2>
+              <div className="flex justify-between items-center p-6 pb-4">
+                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>
+                  Create Group
+                </h2>
                 <button
                   onClick={() => setShowCreateGroupModal(false)}
-                  className={`${isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'} p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`}
+                  className={`${isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'} p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
-              <div className="p-6 space-y-6">
+              
+              <div className="px-6 space-y-6">
                 {/* Group Name */}
                 <div>
-                  <label htmlFor="group-name" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} text-sm font-medium block mb-2`}>Group Name</label>
+                  <label className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} text-sm block mb-2`}>
+                    Group Name
+                  </label>
                   <input
                     type="text"
-                    id="group-name"
                     placeholder="Virtual Assistant"
                     value={groupName}
                     onChange={(e) => setGroupName(e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' : 'border-gray-300 text-gray-900 placeholder-gray-500'}`}
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-500'}`}
                   />
                 </div>
 
                 {/* Credit Limit */}
                 <div>
-                  <label htmlFor="credit-limit" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} text-sm font-medium block mb-2`}>Credit Limit</label>
+                  <label className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} text-sm block mb-2`}>
+                    Credit Limit
+                  </label>
                   <input
-                    type="number"
-                    id="credit-limit"
+                    type="text"
                     placeholder="5,000"
                     value={creditLimit}
                     onChange={(e) => {
-                      const value = e.target.value === '' ? '' : Number(e.target.value);
-                      setCreditLimit(value);
+                      const value = e.target.value;
+                      if (value === '') {
+                        setCreditLimit('');
+                      } else {
+                        const numericValue = parseInt(value.replace(/,/g, ''), 10);
+                        if (!isNaN(numericValue)) {
+                          setCreditLimit(numericValue);
+                        }
+                      }
                     }}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' : 'border-gray-300 text-gray-900 placeholder-gray-500'}`}
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-500'}`}
                   />
                 </div>
 
                 {/* AI Agents */}
                 <div>
-                  <label htmlFor="ai-agents" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} text-sm font-medium block mb-2`}>AI Agents</label>
-                  <div className={`relative w-full ${isDarkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'} border rounded-lg focus-within:ring-2 focus-within:ring-teal-500`}>
-                    <select
-                      id="ai-agents"
-                      multiple
-                      value={selectedAgents}
-                      onChange={(e) => setSelectedAgents(Array.from(e.target.options).filter(option => option.selected).map(option => option.value))}
-                      className={`block w-full px-4 py-3 text-base rounded-lg cursor-pointer appearance-none ${isDarkMode ? 'bg-gray-700 text-gray-100' : 'bg-transparent text-gray-900'} focus:outline-none`}
-                      style={{ minHeight: '50px' }}
-                    >
-                      <option value="" disabled>Select an agent</option>
-                      <option value="N">Navi</option>
-                      <option value="P">Phoebe</option>
-                      <option value="C">Cody</option>
-                      <option value="F">Finch</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
-                      <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9l4.95 4.95z"/></svg>
-                    </div>
-                  </div>
-                  {selectedAgents.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {selectedAgents.map(agent => (
-                        <span key={agent} className={`${agent === 'N' ? 'bg-green-100 text-green-800' : 'bg-pink-100 text-pink-800'} px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1`}>
-                          {agent === 'N' ? 'Navi' : 'Emmy'}
-                          <button onClick={() => setSelectedAgents(selectedAgents.filter(a => a !== agent))} className="ml-1 text-sm font-bold text-gray-500 hover:text-gray-700">×</button>
+                  <label className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} text-sm block mb-2`}>
+                    AI Agents
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center space-x-2">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${isDarkMode ? 'bg-emerald-900 text-emerald-300' : 'bg-emerald-100 text-emerald-800'}`}>
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold mr-2 ${isDarkMode ? 'bg-emerald-700 text-emerald-200' : 'bg-emerald-200 text-emerald-700'}`}>
+                          N
                         </span>
-                      ))}
+                        Navi
+                        <button 
+                          onClick={() => setSelectedAgents(selectedAgents.filter(a => a !== 'N'))}
+                          className="ml-2 text-emerald-600 hover:text-emerald-800 text-sm font-bold"
+                        >
+                          ×
+                        </button>
+                      </span>
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${isDarkMode ? 'bg-pink-900 text-pink-300' : 'bg-pink-100 text-pink-800'}`}>
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold mr-2 ${isDarkMode ? 'bg-pink-700 text-pink-200' : 'bg-pink-200 text-pink-700'}`}>
+                          E
+                        </span>
+                        Emmy
+                        <button 
+                          onClick={() => setSelectedAgents(selectedAgents.filter(a => a !== 'E'))}
+                          className="ml-2 text-pink-600 hover:text-pink-800 text-sm font-bold"
+                        >
+                          ×
+                        </button>
+                      </span>
                     </div>
-                  )}
+                    <button
+                      className={`p-1 rounded-full ${isDarkMode ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'} transition-colors`}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
 
-                {/* Add User */}
-                <div>
-                  <label htmlFor="add-user" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} text-sm font-medium block mb-2`}>Add User</label>
-                  <div className={`relative w-full ${isDarkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'} border rounded-lg focus-within:ring-2 focus-within:ring-teal-500`}>
-                    <input
-                      type="text"
-                      id="add-user"
-                      placeholder="Search member"
-                      className={`block w-full px-4 py-3 text-base rounded-lg cursor-pointer appearance-none ${isDarkMode ? 'bg-gray-700 text-gray-100' : 'bg-transparent text-gray-900'} focus:outline-none`}
-                      style={{ minHeight: '50px' }}
-                    />
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
-                      <svg className="fill-current h-4 w-4 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9l4.95 4.95z"/></svg>
+                {/* Members */}
+                <div className="pb-4">
+                  <label className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} text-sm block mb-3`}>
+                    Members
+                  </label>
+                  <div className="flex items-center space-x-3">
+                    <button className={`w-12 h-12 rounded-full flex items-center justify-center border-2 border-dashed transition-colors ${isDarkMode ? 'border-gray-600 text-gray-400 hover:border-gray-500 hover:text-gray-300' : 'border-gray-300 text-gray-400 hover:border-gray-400 hover:text-gray-500'}`}>
+                      <HiOutlinePlus size={20} />
+                    </button>
+                    
+                    {/* Sample member avatars */}
+                    <div className="relative group">
+                      <Image
+                        src="/images/Troy.jpg"
+                        alt="Member"
+                        width={48}
+                        height={48}
+                        className="rounded-full cursor-pointer border-2 border-white dark:border-gray-700"
+                      />
+                      <div className={`absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 ${isDarkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-800 text-white'}`}>
+                        Cristofer Stanton
+                      </div>
+                    </div>
+                    
+                    <div className="relative group">
+                      <Image
+                        src="/images/Audra.png"
+                        alt="Member"
+                        width={48}
+                        height={48}
+                        className="rounded-full cursor-pointer border-2 border-white dark:border-gray-700"
+                      />
+                    </div>
+                    
+                    <div className="relative group">
+                      <Image
+                        src="/images/Paige.png"
+                        alt="Member"
+                        width={48}
+                        height={48}
+                        className="rounded-full cursor-pointer border-2 border-white dark:border-gray-700"
+                      />
+                    </div>
+                    
+                    <div className="relative group">
+                      <Image
+                        src="/images/Pixie.png"
+                        alt="Member"
+                        width={48}
+                        height={48}
+                        className="rounded-full cursor-pointer border-2 border-white dark:border-gray-700"
+                      />
+                      <button className="absolute -top-1 -right-1 w-5 h-5 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs hover:bg-gray-500 transition-colors font-bold">
+                        ×
+                      </button>
                     </div>
                   </div>
-                  {selectedUsers.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {selectedUsers.map(userId => {
-                        const user = users.find(u => u.id.toString() === userId);
-                        return user ? (
-                          <span key={user.id} className={`${isDarkMode ? 'bg-teal-700 text-teal-100' : 'bg-teal-100 text-teal-800'} px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1`}>
-                            {user.name}
-                            <button onClick={() => setSelectedUsers(selectedUsers.filter(id => id !== userId.toString()))} className="ml-1 text-sm font-bold text-gray-500 hover:text-gray-700">×</button>
-                          </span>
-                        ) : null;
-                      })}
-                    </div>
-                  )}
                 </div>
               </div>
-              <div className="p-6 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-4">
+              
+              <div className="p-6 pt-4 flex justify-end space-x-3">
                 <button
                   onClick={() => setShowCreateGroupModal(false)}
-                  className={`${isDarkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'} px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200`}
+                  className={`px-6 py-2 rounded-lg text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`}
                 >
                   Cancel
                 </button>
@@ -825,7 +876,7 @@ export default function ManageUsersPage() {
                     setSelectedAgents([]);
                     setSelectedUsers([]);
                   }}
-                  className={`${isDarkMode ? 'bg-teal-600 hover:bg-teal-700 text-white' : 'bg-teal-500 hover:bg-teal-600 text-white'} px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200`}
+                  className="px-6 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-medium transition-colors"
                 >
                   Save
                 </button>
@@ -834,14 +885,6 @@ export default function ManageUsersPage() {
           </motion.div>
         )}
       </AnimatePresence>
-      <AddMemberModal
-        isOpen={showAddMemberModal}
-        onClose={closeAddMemberModal}
-        isDarkMode={isDarkMode}
-        groupName={selectedGroupForAddMember}
-        users={users.filter(user => user.group !== selectedGroupForAddMember)}
-        onAddMembers={handleAddMembersToGroup}
-      />
     </div>
   );
 }
