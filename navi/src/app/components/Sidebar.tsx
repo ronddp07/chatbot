@@ -24,8 +24,15 @@ import {
   HiArrowTopRightOnSquare, 
   HiChevronDown, 
   HiXMark, 
+  HiOutlineCheck, 
+  HiOutlinePlus,
+  HiOutlineTrash,
+  HiOutlineArrowPathRoundedSquare,
+  HiUsers,
 } from 'react-icons/hi2';
 import type { IconType } from 'react-icons';
+import NaviAgentsModal from './NaviAgentsModal';
+import AccountCard from './AccountCard';
 
 export type SidebarProps = {
   isDarkMode: boolean;
@@ -38,6 +45,8 @@ export type SidebarProps = {
   setIsNaviDropdownOpen: Dispatch<SetStateAction<boolean>>;
   isProfileOpen: boolean;
   setIsProfileOpen: Dispatch<SetStateAction<boolean>>;
+  isNaviChatbotOpen: boolean;
+  setIsNaviChatbotOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 type NavItem = {
@@ -76,16 +85,24 @@ export default function Sidebar({
   setIsNaviDropdownOpen,
   isProfileOpen,
   setIsProfileOpen,
+  isNaviChatbotOpen,
 }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
+  const [groupName, setGroupName] = useState('');
+  const [creditLimit, setCreditLimit] = useState('');
+  const [selectedAgents, setSelectedAgents] = useState<string[]>(['N', 'E']); // Default selected agents
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 
   const handleNavigation = (path: string) => {
     router.push(path);
     if(isNaviModalOpen) {
       setIsNaviModalOpen(false);
     }
+    setIsProfileOpen(false); // Close the profile dropdown when navigating
   };
+
 
   const ProfileDropdown = () => (
     <motion.div
@@ -104,32 +121,40 @@ export default function Sidebar({
             <p className="text-sm opacity-70">Online</p>
           </div>
         </div>
+        <div className={`border-t my-1 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}></div>
         <button
-          onClick={() => router.push('/users')}
-          className={`flex items-center w-full px-4 py-2 text-sm ${isDarkMode ? 'hover:bg-gray-700 text-gray-100' : 'hover:bg-gray-100 text-gray-900'}`}
+          onClick={() => handleNavigation('/manage-users')}
+          className={`flex items-center w-full px-5 py-2 text-sm ${isDarkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'}`}
         >
-          <HiOutlineUsers size={20} className="mr-3" /> Manage Users
+          <HiOutlineUsers size={20} className="mr-3" />
+          Manage Users
         </button>
         <button
-          onClick={() => router.push('/billing')}
+          onClick={() => handleNavigation('/billing')}
           className={`flex items-center w-full px-4 py-2 text-sm ${isDarkMode ? 'hover:bg-gray-700 text-gray-100' : 'hover:bg-gray-100 text-gray-900'}`}
         >
           <HiOutlineWallet size={20} className="mr-3" /> Billing & Subscription
         </button>
         <button
-          onClick={() => console.log('Earn Credits and $')}
+          onClick={() => handleNavigation('/earn-credits')}
           className={`flex items-center w-full px-4 py-2 text-sm ${isDarkMode ? 'hover:bg-gray-700 text-gray-100' : 'hover:bg-gray-100 text-gray-900'}`}
         >
           <HiOutlineGift size={20} className="mr-3" /> Earn Credits and $
         </button>
+         <button
+          onClick={() => handleNavigation('/earn-rewards')}
+          className={`flex items-center w-full px-4 py-2 text-sm ${isDarkMode ? 'hover:bg-gray-700 text-gray-100' : 'hover:bg-gray-100 text-gray-900'}`}
+        >
+          <HiOutlineBell size={20} className="mr-3" /> Earn Rewards
+          </button>
         <button
-          onClick={() => console.log('Knowledge Base')}
+          onClick={() => handleNavigation('/knowledge-base')}
           className={`flex items-center w-full px-4 py-2 text-sm ${isDarkMode ? 'hover:bg-gray-700 text-gray-100' : 'hover:bg-gray-100 text-gray-900'}`}
         >
           <HiOutlineBookOpen size={20} className="mr-3" /> Knowledge Base
-        </button>
-        <button
-          onClick={() => router.push('/settings')}
+          </button>
+          <button
+          onClick={() => handleNavigation('/settings')}
           className={`flex items-center w-full px-4 py-2 text-sm ${isDarkMode ? 'hover:bg-gray-700 text-gray-100' : 'hover:bg-gray-100 text-gray-900'}`}
         >
           <HiOutlineCog6Tooth size={20} className="mr-3" /> Settings
@@ -177,7 +202,10 @@ export default function Sidebar({
           </div>
         </div>
         <button
-          onClick={() => console.log('Sign Out')}
+          onClick={() => {
+            console.log('Sign Out');
+            // Add sign out logic here
+          }}
           className={`flex items-center w-full px-4 py-2 text-sm ${isDarkMode ? 'text-red-400 hover:bg-gray-700' : 'text-red-500 hover:bg-gray-100'}`}
         >
           <HiArrowRightOnRectangle size={20} className="mr-3" /> Sign Out
@@ -244,7 +272,7 @@ export default function Sidebar({
               justifyContent: isSidebarCollapsed ? 'center' : 'space-between'
             }}
             className="flex items-center rounded-full text-white w-full cursor-pointer mb-4"
-            onClick={() => handleNavigation('/agentsdropdown')}
+            onClick={() => setIsNaviModalOpen(true)}
           >
             <div className={`flex items-center ${isSidebarCollapsed ? 'justify-center' : 'space-x-3'}`}>
               <Image
@@ -271,22 +299,22 @@ export default function Sidebar({
           </motion.div>
 
           {navItems.map((item) => {
-            const isActive = pathname.startsWith(item.path);
+            const isActive = item.path === '/' ? pathname === '/' : pathname?.startsWith(item.path) ?? false;
             return (
             <motion.button
                 key={item.name}
                 onClick={() => handleNavigation(item.path)}
-                className={`px-4 py-3 my-1 rounded-xl flex items-center w-full text-left transition-colors duration-200 ${isSidebarCollapsed ? 'justify-center' : 'space-x-4'} ${isActive ? (isDarkMode ? 'bg-emerald-900' : 'bg-emerald-100') : (isDarkMode ? 'bg-gray-900 hover:bg-gray-800' : 'bg-white hover:bg-gray-50')}`}
+                className={`px-4 py-3 my-1 rounded-xl flex items-center w-full text-left transition-colors duration-200 group ${isSidebarCollapsed ? 'justify-center' : 'space-x-4'} ${isActive ? (isDarkMode ? 'bg-emerald-900' : 'bg-emerald-100') : (isDarkMode ? 'bg-gray-900 hover:bg-emerald-800' : 'bg-white hover:bg-emerald-50')}`}
                 title={item.name}
               >
-                <item.icon size={28} className={`shrink-0 ${isActive ? (isDarkMode ? 'text-emerald-400' : 'text-emerald-600') : (isDarkMode ? 'text-gray-500' : 'text-gray-400')}`} />
+                <item.icon size={28} className={`shrink-0 transition-colors duration-200 ${isActive ? (isDarkMode ? 'text-emerald-400' : 'text-emerald-600') : (isDarkMode ? 'text-gray-500 group-hover:text-emerald-400' : 'text-gray-400 group-hover:text-emerald-600')}`} />
                 <AnimatePresence>
                   {!isSidebarCollapsed && (
                     <motion.span
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className={`text-base font-medium whitespace-nowrap ${isActive ? (isDarkMode ? 'text-emerald-300' : 'text-emerald-800') : (isDarkMode ? 'text-gray-300' : 'text-gray-700')}`}
+                      className={`text-base font-medium whitespace-nowrap transition-colors duration-200 ${isActive ? (isDarkMode ? 'text-emerald-300' : 'text-emerald-800') : (isDarkMode ? 'text-gray-300 group-hover:text-emerald-300' : 'text-gray-700 group-hover:text-emerald-800')}`}
                     >
                       {item.name}
                     </motion.span>
@@ -366,6 +394,12 @@ export default function Sidebar({
           </motion.div>
         )}
       </AnimatePresence>
+
+      <NaviAgentsModal
+        isOpen={isNaviModalOpen}
+        onClose={() => setIsNaviModalOpen(false)}
+        isDarkMode={isDarkMode}
+      />
       </motion.div>
   );
 
@@ -397,6 +431,203 @@ export default function Sidebar({
       <aside className="hidden lg:block flex-none">
         <SidebarContent />
       </aside>
+
+      {/* Create Group Modal */}
+      <AnimatePresence>
+        {showCreateGroupModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+            onClick={() => setShowCreateGroupModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-2xl shadow-xl w-full max-w-2xl mx-4 overflow-hidden`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center p-6 pb-4">
+                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>
+                  Create Group
+                </h2>
+                <button
+                  onClick={() => setShowCreateGroupModal(false)}
+                  className={`${isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'} p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="px-6 space-y-6">
+                {/* Group Name */}
+                <div>
+                  <label className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} text-sm block mb-2`}>
+                    Group Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Virtual Assistant"
+                    value={groupName}
+                    onChange={(e) => setGroupName(e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-500'}`}
+                  />
+                </div>
+
+                {/* Credit Limit */}
+                <div>
+                  <label className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} text-sm block mb-2`}>
+                    Credit Limit
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="5,000"
+                    value={creditLimit}
+                    onChange={(e) => setCreditLimit(e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-500'}`}
+                  />
+                </div>
+
+                {/* AI Agents */}
+                <div>
+                  <label className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} text-sm block mb-2`}>
+                    AI Agents
+                  </label>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center space-x-2 flex-wrap gap-2">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${isDarkMode ? 'bg-emerald-900 text-emerald-300' : 'bg-emerald-100 text-emerald-800'}`}>
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold mr-2 ${isDarkMode ? 'bg-emerald-700 text-emerald-200' : 'bg-emerald-200 text-emerald-700'}`}>
+                          N
+                        </span>
+                        Navi
+                        <button 
+                          onClick={() => setSelectedAgents(selectedAgents.filter(a => a !== 'N'))}
+                          className="ml-2 text-emerald-600 hover:text-emerald-800 text-sm font-bold"
+                        >
+                          ×
+                        </button>
+                      </span>
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${isDarkMode ? 'bg-pink-900 text-pink-300' : 'bg-pink-100 text-pink-800'}`}>
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold mr-2 ${isDarkMode ? 'bg-pink-700 text-pink-200' : 'bg-pink-200 text-pink-700'}`}>
+                          E
+                        </span>
+                        Emmy
+                        <button 
+                          onClick={() => setSelectedAgents(selectedAgents.filter(a => a !== 'E'))}
+                          className="ml-2 text-pink-600 hover:text-pink-800 text-sm font-bold"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    </div>
+                    <button
+                      className={`p-1 rounded-full ${isDarkMode ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'} transition-colors`}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Members */}
+                <div className="pb-4">
+                  <label className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} text-sm block mb-3`}>
+                    Members
+                  </label>
+                  <div className="flex items-center space-x-3 flex-wrap gap-3">
+                    <button className={`w-12 h-12 rounded-full flex items-center justify-center border-2 border-dashed transition-colors ${isDarkMode ? 'border-gray-600 text-gray-400 hover:border-gray-500 hover:text-gray-300' : 'border-gray-300 text-gray-400 hover:border-gray-400 hover:text-gray-500'}`}>
+                      <HiOutlinePlus size={20} />
+                    </button>
+                    
+                    {/* Sample member avatars */}
+                    <div className="relative group">
+                      <Image
+                        src="/images/Troy.jpg"
+                        alt="Member"
+                        width={48}
+                        height={48}
+                        className="rounded-full cursor-pointer border-2 border-white dark:border-gray-700"
+                      />
+                      <div className={`absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 ${isDarkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-800 text-white'}`}>
+                        Cristofer Stanton
+                      </div>
+                    </div>
+                    
+                    <div className="relative group">
+                      <Image
+                        src="/images/Audra.png"
+                        alt="Member"
+                        width={48}
+                        height={48}
+                        className="rounded-full cursor-pointer border-2 border-white dark:border-gray-700"
+                      />
+                      <div className={`absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 ${isDarkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-800 text-white'}`}>
+                        Audra Smith
+                      </div>
+                    </div>
+                    
+                    <div className="relative group">
+                      <Image
+                        src="/images/Paige.png"
+                        alt="Member"
+                        width={48}
+                        height={48}
+                        className="rounded-full cursor-pointer border-2 border-white dark:border-gray-700"
+                      />
+                      <div className={`absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 ${isDarkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-800 text-white'}`}>
+                        Paige Johnson
+                      </div>
+                    </div>
+                    
+                    <div className="relative group">
+                      <Image
+                        src="/images/Pixie.png"
+                        alt="Member"
+                        width={48}
+                        height={48}
+                        className="rounded-full cursor-pointer border-2 border-white dark:border-gray-700"
+                      />
+                      <button className="absolute -top-1 -right-1 w-5 h-5 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs hover:bg-gray-500 transition-colors font-bold">
+                        ×
+                      </button>
+                      <div className={`absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 ${isDarkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-800 text-white'}`}>
+                        Pixie Lee
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-6 pt-4 flex justify-end space-x-3">
+                <button
+                  onClick={() => setShowCreateGroupModal(false)}
+                  className={`px-6 py-2 rounded-lg text-sm font-medium transition-colors ${isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    console.log('Create Group:', { groupName, creditLimit, selectedAgents, selectedUsers });
+                    setShowCreateGroupModal(false);
+                    setGroupName('');
+                    setCreditLimit('');
+                    setSelectedAgents(['N', 'E']);
+                    setSelectedUsers([]);
+                  }}
+                  className="px-6 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-medium transition-colors"
+                >
+                  Save
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
