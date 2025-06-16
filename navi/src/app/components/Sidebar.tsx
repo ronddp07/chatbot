@@ -24,8 +24,15 @@ import {
   HiArrowTopRightOnSquare, 
   HiChevronDown, 
   HiXMark, 
+  HiOutlineCheck, 
+  HiOutlinePlus,
+  HiOutlineTrash,
+  HiOutlineArrowPathRoundedSquare,
+  HiUsers,
 } from 'react-icons/hi2';
 import type { IconType } from 'react-icons';
+import NaviAgentsModal from './NaviAgentsModal';
+import AccountCard from './AccountCard';
 
 export type SidebarProps = {
   isDarkMode: boolean;
@@ -38,6 +45,8 @@ export type SidebarProps = {
   setIsNaviDropdownOpen: Dispatch<SetStateAction<boolean>>;
   isProfileOpen: boolean;
   setIsProfileOpen: Dispatch<SetStateAction<boolean>>;
+  isNaviChatbotOpen: boolean;
+  setIsNaviChatbotOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 type NavItem = {
@@ -76,6 +85,7 @@ export default function Sidebar({
   setIsNaviDropdownOpen,
   isProfileOpen,
   setIsProfileOpen,
+  isNaviChatbotOpen,
 }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -86,6 +96,9 @@ export default function Sidebar({
       setIsNaviModalOpen(false);
     }
   };
+
+  
+
 
   const ProfileDropdown = () => (
     <motion.div
@@ -104,11 +117,13 @@ export default function Sidebar({
             <p className="text-sm opacity-70">Online</p>
           </div>
         </div>
+        <div className={`border-t my-1 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}></div>
         <button
-          onClick={() => console.log('Manage Users')}
-          className={`flex items-center w-full px-4 py-2 text-sm ${isDarkMode ? 'hover:bg-gray-700 text-gray-100' : 'hover:bg-gray-100 text-gray-900'}`}
+          onClick={() => handleNavigation('/manage-users')}
+          className={`flex items-center w-full px-5 py-2 text-sm ${isDarkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'}`}
         >
-          <HiOutlineUsers size={20} className="mr-3" /> Manage Users
+          <HiOutlineUsers size={20} className="mr-3" />
+          Manage Users
         </button>
         <button
           onClick={() => console.log('Billing & Subscription')}
@@ -244,7 +259,7 @@ export default function Sidebar({
               justifyContent: isSidebarCollapsed ? 'center' : 'space-between'
             }}
             className="flex items-center rounded-full text-white w-full cursor-pointer mb-4"
-            onClick={() => handleNavigation('/agentsdropdown')}
+            onClick={() => setIsNaviModalOpen(true)}
           >
             <div className={`flex items-center ${isSidebarCollapsed ? 'justify-center' : 'space-x-3'}`}>
               <Image
@@ -366,6 +381,12 @@ export default function Sidebar({
           </motion.div>
         )}
       </AnimatePresence>
+
+      <NaviAgentsModal
+        isOpen={isNaviModalOpen}
+        onClose={() => setIsNaviModalOpen(false)}
+        isDarkMode={isDarkMode}
+      />
       </motion.div>
   );
 

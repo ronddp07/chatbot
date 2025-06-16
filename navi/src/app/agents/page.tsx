@@ -15,6 +15,7 @@ export default function AgentsPage() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAgentsModalOpen, setIsAgentsModalOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState<any>(null);
+  const [isNaviChatbotOpen, setIsNaviChatbotOpen] = useState(false);
 
   const availableAgents = [
     { name: 'Navi', image: '/images/Navi.png', bgColor: 'from-cyan-400 to-teal-500', description: 'Lorem ipsum' },
@@ -57,6 +58,8 @@ export default function AgentsPage() {
         setIsNaviDropdownOpen={setIsNaviDropdownOpen}
         isProfileOpen={isProfileOpen}
         setIsProfileOpen={setIsProfileOpen}
+        isNaviChatbotOpen={isNaviChatbotOpen}
+        setIsNaviChatbotOpen={setIsNaviChatbotOpen}
       />
       <div className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'ml-12' : 'ml-32'} p-6 sm:p-8 overflow-x-hidden flex justify-center ${isAgentsModalOpen ? 'filter blur-sm' : ''}`}>
         <motion.div
