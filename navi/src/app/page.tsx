@@ -8,7 +8,6 @@ import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Sidebar from './components/Sidebar';
-import { HiOutlineUsers, HiOutlineWallet, HiOutlineGift, HiOutlineBookOpen, HiOutlineCog6Tooth, HiArrowRightOnRectangle } from 'react-icons/hi2';
 
 interface AgentActivity {
   title: string;
@@ -179,7 +178,6 @@ export default function Dashboard() {
   const [isNaviModalOpen, setIsNaviModalOpen] = useState(false);
   const { isDarkMode, toggleDarkMode } = useTheme();
   const router = useRouter();
-  const [isNaviChatbotOpen, setIsNaviChatbotOpen] = useState(false);
 
   const chartData = [
     { name: 'Jun 05', Navi: 60, Pixie: 40, Paige: 50, Audra: 20, Flicka: 15 },
@@ -198,10 +196,6 @@ export default function Dashboard() {
     { name: 'Ahmad Geidt', usage: 987, credits: 241 },
   ];
 
-  const handleNavigation = (path: string) => {
-    router.push(path);
-  };
-
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'} flex font-poppins transition-colors duration-300`}>
       <Sidebar
@@ -215,8 +209,6 @@ export default function Dashboard() {
         setIsNaviDropdownOpen={setIsNaviDropdownOpen}
         isProfileOpen={isProfileOpen}
         setIsProfileOpen={setIsProfileOpen}
-        isNaviChatbotOpen={isNaviChatbotOpen}
-        setIsNaviChatbotOpen={setIsNaviChatbotOpen}
       />
 
       {/* Main Content */}

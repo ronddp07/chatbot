@@ -24,15 +24,8 @@ import {
   HiArrowTopRightOnSquare, 
   HiChevronDown, 
   HiXMark, 
-  HiOutlineCheck, 
-  HiOutlinePlus,
-  HiOutlineTrash,
-  HiOutlineArrowPathRoundedSquare,
-  HiUsers,
 } from 'react-icons/hi2';
 import type { IconType } from 'react-icons';
-import NaviAgentsModal from './NaviAgentsModal';
-import AccountCard from './AccountCard';
 
 export type SidebarProps = {
   isDarkMode: boolean;
@@ -45,8 +38,6 @@ export type SidebarProps = {
   setIsNaviDropdownOpen: Dispatch<SetStateAction<boolean>>;
   isProfileOpen: boolean;
   setIsProfileOpen: Dispatch<SetStateAction<boolean>>;
-  isNaviChatbotOpen: boolean;
-  setIsNaviChatbotOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 type NavItem = {
@@ -85,7 +76,6 @@ export default function Sidebar({
   setIsNaviDropdownOpen,
   isProfileOpen,
   setIsProfileOpen,
-  isNaviChatbotOpen,
 }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -96,9 +86,6 @@ export default function Sidebar({
       setIsNaviModalOpen(false);
     }
   };
-
-  
-
 
   const ProfileDropdown = () => (
     <motion.div
@@ -117,16 +104,14 @@ export default function Sidebar({
             <p className="text-sm opacity-70">Online</p>
           </div>
         </div>
-        <div className={`border-t my-1 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}></div>
         <button
-          onClick={() => handleNavigation('/manage-users')}
-          className={`flex items-center w-full px-5 py-2 text-sm ${isDarkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'}`}
+          onClick={() => router.push('/users')}
+          className={`flex items-center w-full px-4 py-2 text-sm ${isDarkMode ? 'hover:bg-gray-700 text-gray-100' : 'hover:bg-gray-100 text-gray-900'}`}
         >
-          <HiOutlineUsers size={20} className="mr-3" />
-          Manage Users
+          <HiOutlineUsers size={20} className="mr-3" /> Manage Users
         </button>
         <button
-          onClick={() => console.log('Billing & Subscription')}
+          onClick={() => router.push('/billing')}
           className={`flex items-center w-full px-4 py-2 text-sm ${isDarkMode ? 'hover:bg-gray-700 text-gray-100' : 'hover:bg-gray-100 text-gray-900'}`}
         >
           <HiOutlineWallet size={20} className="mr-3" /> Billing & Subscription
@@ -144,7 +129,7 @@ export default function Sidebar({
           <HiOutlineBookOpen size={20} className="mr-3" /> Knowledge Base
         </button>
         <button
-          onClick={() => console.log('Settings')}
+          onClick={() => router.push('/settings')}
           className={`flex items-center w-full px-4 py-2 text-sm ${isDarkMode ? 'hover:bg-gray-700 text-gray-100' : 'hover:bg-gray-100 text-gray-900'}`}
         >
           <HiOutlineCog6Tooth size={20} className="mr-3" /> Settings
@@ -259,7 +244,7 @@ export default function Sidebar({
               justifyContent: isSidebarCollapsed ? 'center' : 'space-between'
             }}
             className="flex items-center rounded-full text-white w-full cursor-pointer mb-4"
-            onClick={() => setIsNaviModalOpen(true)}
+            onClick={() => handleNavigation('/agentsdropdown')}
           >
             <div className={`flex items-center ${isSidebarCollapsed ? 'justify-center' : 'space-x-3'}`}>
               <Image
@@ -286,22 +271,22 @@ export default function Sidebar({
           </motion.div>
 
           {navItems.map((item) => {
-            const isActive = item.path === '/' ? pathname === '/' : pathname.startsWith(item.path);
+            const isActive = pathname.startsWith(item.path);
             return (
             <motion.button
                 key={item.name}
                 onClick={() => handleNavigation(item.path)}
-                className={`px-4 py-3 my-1 rounded-xl flex items-center w-full text-left transition-colors duration-200 group ${isSidebarCollapsed ? 'justify-center' : 'space-x-4'} ${isActive ? (isDarkMode ? 'bg-emerald-900' : 'bg-emerald-100') : (isDarkMode ? 'bg-gray-900 hover:bg-emerald-800' : 'bg-white hover:bg-emerald-50')}`}
+                className={`px-4 py-3 my-1 rounded-xl flex items-center w-full text-left transition-colors duration-200 ${isSidebarCollapsed ? 'justify-center' : 'space-x-4'} ${isActive ? (isDarkMode ? 'bg-emerald-900' : 'bg-emerald-100') : (isDarkMode ? 'bg-gray-900 hover:bg-gray-800' : 'bg-white hover:bg-gray-50')}`}
                 title={item.name}
               >
-                <item.icon size={28} className={`shrink-0 transition-colors duration-200 ${isActive ? (isDarkMode ? 'text-emerald-400' : 'text-emerald-600') : (isDarkMode ? 'text-gray-500 group-hover:text-emerald-400' : 'text-gray-400 group-hover:text-emerald-600')}`} />
+                <item.icon size={28} className={`shrink-0 ${isActive ? (isDarkMode ? 'text-emerald-400' : 'text-emerald-600') : (isDarkMode ? 'text-gray-500' : 'text-gray-400')}`} />
                 <AnimatePresence>
                   {!isSidebarCollapsed && (
                     <motion.span
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className={`text-base font-medium whitespace-nowrap transition-colors duration-200 ${isActive ? (isDarkMode ? 'text-emerald-300' : 'text-emerald-800') : (isDarkMode ? 'text-gray-300 group-hover:text-emerald-300' : 'text-gray-700 group-hover:text-emerald-800')}`}
+                      className={`text-base font-medium whitespace-nowrap ${isActive ? (isDarkMode ? 'text-emerald-300' : 'text-emerald-800') : (isDarkMode ? 'text-gray-300' : 'text-gray-700')}`}
                     >
                       {item.name}
                     </motion.span>
@@ -381,12 +366,6 @@ export default function Sidebar({
           </motion.div>
         )}
       </AnimatePresence>
-
-      <NaviAgentsModal
-        isOpen={isNaviModalOpen}
-        onClose={() => setIsNaviModalOpen(false)}
-        isDarkMode={isDarkMode}
-      />
       </motion.div>
   );
 

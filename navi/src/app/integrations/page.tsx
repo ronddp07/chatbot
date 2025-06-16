@@ -24,14 +24,12 @@ export default function IntegrationsPage() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('All');
-  const [isNaviChatbotOpen, setIsNaviChatbotOpen] = useState(false);
-
 
   const integrationData: Integration[] = [
     {
       name: 'LinkedIn',
       description: 'Create and share posts with your linkedin network.',
-      icon: '/images/linkedin.jpg',
+      icon: '/images/linkedin.png',
       status: 'connected',
       connectedAccount: 'troy@hurdman.net',
       category: 'Communication',
@@ -39,7 +37,7 @@ export default function IntegrationsPage() {
     {
       name: 'Facebook & Instagram',
       description: 'Manage Facebook and Instagram pages, accounts, and posts.',
-      icon: '/images/fbinsta.png',
+      icon: '/images/facebook-instagram.png',
       status: 'not-connected',
       category: 'Communication',
     },
@@ -54,14 +52,14 @@ export default function IntegrationsPage() {
     {
       name: 'Google Calendar',
       description: 'Allow helpers to see and schedule events and meetings.',
-      icon: '/images/calendar.png',
+      icon: '/images/google-calendar.png',
       status: 'not-connected',
       category: 'Calendar',
     },
     {
       name: 'Google Drive',
       description: 'Create and read docs, sheets, and other files.',
-      icon: '/images/drive.jpg',
+      icon: '/images/google-drive.png',
       status: 'connected',
       connectedAccount: 'troy@hurdman.net',
       category: 'Task',
@@ -96,10 +94,8 @@ export default function IntegrationsPage() {
         setIsNaviDropdownOpen={setIsNaviDropdownOpen}
         isProfileOpen={isProfileOpen}
         setIsProfileOpen={setIsProfileOpen}
-        isNaviChatbotOpen={isNaviChatbotOpen}
-        setIsNaviChatbotOpen={setIsNaviChatbotOpen}
       />
-      <div className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'ml-12' : 'ml-32'} p-6 sm:p-8 overflow-x-hidden flex justify-center`}>
+      <div className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'ml-24' : 'ml-72'} p-6 sm:p-8 overflow-x-hidden w-full max-w-6xl mx-auto`}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -149,7 +145,7 @@ export default function IntegrationsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredIntegrations.map((integration) => (
-              <IntegrationCard key={integration.name} {...integration} isDarkMode={isDarkMode} />
+              <IntegrationCard key={integration.name} {...integration} />
             ))}
           </div>
         </motion.div>
